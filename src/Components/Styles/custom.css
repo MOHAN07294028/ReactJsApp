@@ -1,0 +1,58 @@
+
+.logo{
+    height: 15%;
+    width: 100%;
+    padding: 2px;
+    display: flex;
+    justify-content: center;
+    background: lightgrey;
+  }
+
+  .logo img {
+    max-width: 100%; /* Ensures the image doesn't exceed its container */
+    max-height: 100%; /* Ensures the image doesn't exceed its container */
+  }
+
+  .sider{
+     background-color: blue
+  }
+
+  .header{
+    background-color:  blue;
+  }
+  .ant-select{
+    width: 100%;
+  } 
+
+  .headerStyle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .registerContainer{
+    width: 60%;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    border: 1px solid #ccc;
+    box-shadow: 2px 1px 10px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+  }
+
+  .centerContent{
+    display: flex;
+    justify-content: center;
+  }
+  .ant-btn{
+    background: #063d8a;
+  }
+  .ant-picker{
+    width: 100%;
+  }
+
+  .requiredHighlight {
+    color: red;
+  }
+  
