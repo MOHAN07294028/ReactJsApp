@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { Layout, Menu, ColorPicker, Row, Col, Avatar, Spin } from "antd";
+import { BrowserRouter, Route, Switch, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import "../Styles/custom.css";
 import { UserOutlined, SettingOutlined } from "@ant-design/icons";
 import axios from "axios";
-import Dashboard from "../Dashboard";
+import Employee from "../employee";
+import Dashboard from "../dashboard";
+import Manager from "../manager";
+import NotFound from "../../Pages/NotFound";
 import FormField from "../Common/FormInput/FormComponent";
-import Employee from "../Employee";
-import Manager from "../Manager";
+import HRManagerDataEntry from "../hrManagerDataEntryPage";
 import LayoutColors from "../../GetColors";
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -58,23 +61,25 @@ function LayoutMainFrame({ children }) {
       setPages([]);
     }
   };
-  
+  const [getPathName, setPathName] = useState("");
+  console.log(getPathName, "getPathName");
   const handlePageSearch = (val) => {
     setloading(true);
     setTimeout(() => {
       setloading(false);
-    }, [2000]);
+    }, [1000]);
     const data = getPages?.filter((i) => i._id == val);
     const component = getComponent(data[0]?.pagePath);
     const path = data[0]?.pagePath;
+    setPathName(path);
     // setRenderedComponent(component);
     // getComponent(path)
     // window.location.hash = path
-    clearLastURLSegment();
-    if (path) {
-      window.history.pushState(null, null, path);
-      setRenderedComponent(component);
-    }
+    // clearLastURLSegment();
+    // if (path) {
+    //   window.history.pushState(null, null, path);
+    //   setRenderedComponent(component);
+    // }
   };
 
   const clearLastURLSegment = () => {
@@ -86,24 +91,30 @@ function LayoutMainFrame({ children }) {
   };
 
   const getComponent = (path) => {
+    window.history.pushState(null, null, path);
+    console.log(path, "enter");
     switch (path) {
+      case "/hrmanagerdataentry":
+        return <HRManagerDataEntry />;
       case "/dashboard":
-        return Dashboard;
+        return <Dashboard />;
       case "/employee":
-        return Employee;
+        return <Employee />;
       case "/manager":
-        return Manager;
+        return <Manager />;
       default:
-        return Dashboard;
+        window.history.pushState(null, null, "/");
+
+        return <NotFound />;
     }
   };
 
-  useEffect(() => {
-    if (renderedComponent === null) {
-      window.history.pushState(null, null, "/dashboard");
-      setRenderedComponent(Dashboard);
-    }
-  }, [renderedComponent]);
+  // useEffect(() => {
+  //   if (renderedComponent === null) {
+  //     window.history.pushState(null, null, "/dashboard");
+  //     setRenderedComponent(Dashboard);
+  //   }
+  // }, [renderedComponent]);
 
   return (
     <Spin spinning={loading}>
@@ -128,7 +139,10 @@ function LayoutMainFrame({ children }) {
             className="header"
             style={{ background: backgroundColor, color: contrastColor }}
           >
-            <Row className="row">
+            <Row
+              className="row"
+              style={{ display: "flex", justifyContent: "end" }}
+            >
               <Col span={8}>
                 <FormField
                   name="pagePaths"
@@ -145,7 +159,6 @@ function LayoutMainFrame({ children }) {
                   render="select"
                 />
               </Col>
-              <Col span={12}></Col>
               <Col className="headerStyle" span={1}>
                 <ColorPicker
                   value={backgroundColor}
@@ -171,10 +184,13 @@ function LayoutMainFrame({ children }) {
                 minHeight: "100%",
               }}
             >
-              {renderedComponent ? renderedComponent : <Dashboard />}
+              {getComponent(getPathName)}
+              {/* {renderedComponent ? renderedComponent : <Dashboard />} */}
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>Footer</Footer>
+          <Footer style={{ textAlign: "center", padding: "15px 50px" }}>
+            Footer
+          </Footer>
         </Layout>
       </Layout>
     </Spin>

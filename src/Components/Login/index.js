@@ -8,6 +8,8 @@ import FormField from "../Common/FormInput/FormComponent";
 import axios from "axios";
 import LayoutColors from "../../GetColors";
 import LayoutMainFrame from "../Layout";
+import { Link } from "react-router-dom";
+import Register from "../Register";
 
 function Login() {
   const validationSchema = yup.object().shape({
@@ -70,6 +72,9 @@ function Login() {
       });
     }
   };
+  const onChangeRegister =()=>{
+    sessionStorage.setItem('IsRegisterPage',"true")
+  }
   const onError = async (values) => {};
   return (
     <Spin spinning={loading}>
@@ -111,7 +116,7 @@ function Login() {
                   />
                 </Col>
               </Row>
-              <Row className="row">
+              <Row className="row mb-2">
                 <Col span={24} className="centerContent">
                   <Button
                     htmlType="submit"
@@ -120,6 +125,12 @@ function Login() {
                   >
                     Login
                   </Button>
+                </Col>
+               
+              </Row>
+              <Row className="centerContent" >
+              <Col >
+                <Link to="/register">Register</Link>
                 </Col>
               </Row>
             </div>

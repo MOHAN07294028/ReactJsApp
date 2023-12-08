@@ -1,7 +1,5 @@
-
-
 const LayoutColors = {
-  backgroundColor: "#a4e6e1",
+  backgroundColor: "#063D8A",
   contrastColor:"#000000"
 };
 

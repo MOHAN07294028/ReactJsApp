@@ -1,29 +1,33 @@
 import React from "react";
 import LayoutMainFrame from "./Components/Layout";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch,Redirect } from "react-router-dom";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
-import Dashboard from "./Components/Dashboard";
+import NotFound from "./Pages/NotFound";
+// import Dashboard from "./Components/Dashboard";
 
 function App() {
-  const isAuthorized =
-    sessionStorage.getItem("is_AuthorizedToLogin") === "true";
+  const isAuthorized = "true";
+  // sessionStorage.getItem("is_AuthorizedToLogin") === "true";
   //  const getPagePath = sessionStorage.getItem("defaultLoginPage") ;
-
-  console.log(isAuthorized,'isAuthorizedisAuthorized')
   return (
     <div className="App">
-      <Router>
+        <Router>
         <Switch>
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
-          <Route path="/">
-            {isAuthorized ? (
-              <LayoutMainFrame />
-            ) : (
-              <Route path="/" component={Login} />
-            )}
-          </Route>
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/notfound" component={NotFound} />
+
+          {/* If not authorized, redirect to login */}
+          {isAuthorized == 'false' && <Redirect to="/login" />}
+
+          {/* If authorized, load the layout */}
+          {isAuthorized == 'true' && (
+            <Route path="/" component={LayoutMainFrame} />
+          )}
+
+          {/* For all other routes not specified above, redirect to not found */}
+          <Redirect to="/notfound" />
         </Switch>
       </Router>
     </div>
