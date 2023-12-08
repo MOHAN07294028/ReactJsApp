@@ -4,30 +4,22 @@ import { BrowserRouter as Router, Route, Switch,Redirect } from "react-router-do
 import Login from "./Components/Login";
 import Register from "./Components/Register";
 import NotFound from "./Pages/NotFound";
-// import Dashboard from "./Components/Dashboard";
 
 function App() {
-  const isAuthorized = "true";
-  // sessionStorage.getItem("is_AuthorizedToLogin") === "true";
-  //  const getPagePath = sessionStorage.getItem("defaultLoginPage") ;
+  const isAuthorized = sessionStorage.getItem("is_AuthorizedToLogin") === "true";
+  const PagePath = sessionStorage.getItem("pagePath");
   return (
     <div className="App">
         <Router>
         <Switch>
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
-          <Route exact path="/notfound" component={NotFound} />
-
-          {/* If not authorized, redirect to login */}
-          {isAuthorized == 'false' && <Redirect to="/login" />}
-
-          {/* If authorized, load the layout */}
-          {isAuthorized == 'true' && (
+          {(isAuthorized && PagePath != '/' ) && (
             <Route path="/" component={LayoutMainFrame} />
           )}
-
-          {/* For all other routes not specified above, redirect to not found */}
-          <Redirect to="/notfound" />
+           <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/notfound" component={NotFound} />
+          <Redirect to="/login" />
+          {isAuthorized && <Redirect to="/login" />}
         </Switch>
       </Router>
     </div>

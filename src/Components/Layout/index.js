@@ -12,6 +12,7 @@ import NotFound from "../../Pages/NotFound";
 import FormField from "../Common/FormInput/FormComponent";
 import HRManagerDataEntry from "../hrManagerDataEntryPage";
 import LayoutColors from "../../GetColors";
+import Login from "../Login";
 const { Header, Content, Footer, Sider } = Layout;
 
 function LayoutMainFrame({ children }) {
@@ -61,7 +62,8 @@ function LayoutMainFrame({ children }) {
       setPages([]);
     }
   };
-  const [getPathName, setPathName] = useState("");
+  let pageSessionPath = sessionStorage.getItem('pagePath')
+  const [getPathName, setPathName] = useState(pageSessionPath ? pageSessionPath : '/');
   console.log(getPathName, "getPathName");
   const handlePageSearch = (val) => {
     setloading(true);
@@ -90,8 +92,11 @@ function LayoutMainFrame({ children }) {
     window.history.pushState({}, "", newUrl);
   };
 
+  console.log( sessionStorage.getItem('pagePath'),' sessionStorage.setItem')
+
   const getComponent = (path) => {
     window.history.pushState(null, null, path);
+    sessionStorage.setItem('pagePath',path)
     console.log(path, "enter");
     switch (path) {
       case "/hrmanagerdataentry":
@@ -102,9 +107,10 @@ function LayoutMainFrame({ children }) {
         return <Employee />;
       case "/manager":
         return <Manager />;
+        case "/":
+          return <NotFound />;
       default:
         window.history.pushState(null, null, "/");
-
         return <NotFound />;
     }
   };
