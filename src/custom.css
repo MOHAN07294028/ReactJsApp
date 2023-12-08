@@ -36,34 +36,4 @@
     margin-right: 20%;
     margin-top: 2%;
     margin-bottom: 2%;
-    border: 1px solid #ccc;
-    box-shadow: 2px 1px 10px 8px rgba(0, 0, 0, 0.2);
-    padding: 20px;
   }
-
-  .loginContainer{
-    width: 34%;
-    margin-left: 33%;
-    margin-right: 33%;
-    margin-top: 8%;
-    margin-bottom: 8%;
-    border: 1px solid #ccc;
-    box-shadow: 2px 1px 10px 8px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-  }
-
-  .centerContent{
-    display: flex;
-    justify-content: center;
-  }
-  .ant-btn{
-    background: #063d8a;
-  }
-  .ant-picker{
-    width: 100%;
-  }
-
-  .requiredHighlight {
-    color: red;
-  }
-  

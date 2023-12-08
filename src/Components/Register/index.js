@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useForm } from "react-hook-form";
 import "../Styles/custom.css";
 import ocsImage from "./ocs.jpg";
 import FormField from "../Common/FormInput/FormComponent";
-import { Row, Col, Input, Select, Button } from "antd";
+import { Row, Col, Input, Select, Button, notification } from "antd";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
+
 const validationSchema = yup.object().shape({
   employeeId: yup.string().required("Employee Id is required"),
   gender: yup.string().required("Gender is required"),
@@ -20,8 +22,8 @@ const validationSchema = yup.object().shape({
     .string()
     .min(8, "Password must be at least 8 characters")
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/,
+      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
     )
     .required("Password is required"),
   dob: yup.date("Invalid DOB").required("DOB is required"),
@@ -29,17 +31,44 @@ const validationSchema = yup.object().shape({
 });
 
 function Register() {
+  const [getRoles, setRoles] = useState([]);
+  const [getGenders, setGenders] = useState([]);
   const {
     handleSubmit,
     control,
-    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmit = (values) => {
-    console.log(values, getValues(), "values");
+  const onSubmit = async(values) => {
+    const params ={
+      Username:values.employeeId,
+      Email:values.emailId,
+      Password:values.Password,
+      FullName:values.fullName,
+      DateofBirth:values?.dob?.toLocaleDateString(),
+      Address:values.address,
+      PhoneNumber:values.mobileNo,
+      Gender:values.gender,
+      Role:values.role,
+    }
+    try {
+      const apiUrl = `${process.env.REACT_APP_API_URL}/saveRegisterData`;
+      const response = await axios.post(apiUrl,params);
+      if(response?.data?.status){
+        notification.success({
+          message:'Registration successfully'
+        })
+        // router.push('/Components/Login/index.js')
+        window.location.href = '/Components/Login/index.js';
+      }
+    } catch (error) {
+      notification.error({
+        message:error?.message
+      })
+        window.location.href = '/Components/Login/index.js';
+    }
   };
 
   const onError = (err) => {
@@ -54,6 +83,32 @@ function Register() {
     console.log(val);
   };
 
+  useEffect(() => {
+    fetchRoles();
+    fetchGender();
+  }, []);
+
+  const fetchRoles = async () => {
+    try {
+      const apiUrl = `${process.env.REACT_APP_API_URL}/common/GetRoles`;
+      const response = await axios.get(apiUrl);
+      setRoles(response.data.result);
+    } catch (error) {
+      setRoles([]);
+    }
+  };
+  const fetchGender = async () => {
+    try {
+      const apiUrl = `${process.env.REACT_APP_API_URL}/common/GetGenders`;
+      const response = await axios.get(apiUrl);
+      setGenders(response.data.result);
+    } catch (error) {
+      setGenders([]);
+    }
+  };
+
+  console.log(getRoles,'getRoles')
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
@@ -64,7 +119,7 @@ function Register() {
             </Col>
             <Col
               span={10}
-              style={{ fontSize: "35px", fontWeight: "bold", color: "#063d8a"}}
+              style={{ fontSize: "35px", fontWeight: "bold", color: "#063d8a" }}
             >
               Register
             </Col>
@@ -96,7 +151,6 @@ function Register() {
                     control={control}
                     render="input"
                   />
-                  
                 </Col>
                 <Col span={24} className="mb-2">
                   <FormField
@@ -113,6 +167,9 @@ function Register() {
                     label={"Gender"}
                     errors={errors}
                     control={control}
+                    options={getGenders}
+                    nameKey="label"
+                    valueKey="_id"
                     render="select"
                   />
                 </Col>
@@ -122,6 +179,9 @@ function Register() {
                     label={"Role"}
                     errors={errors}
                     control={control}
+                    options={getRoles}
+                    nameKey="label"
+                    valueKey="_id"
                     render="select"
                   />
                 </Col>

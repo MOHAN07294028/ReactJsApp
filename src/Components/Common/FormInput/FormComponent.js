@@ -8,6 +8,9 @@ const FormField = ({
   rules,
   label,
   errors,
+  options,
+  nameKey = "label",
+  valueKey = "_id",
   render = "input",
   ...rest
 }) => {
@@ -21,22 +24,37 @@ const FormField = ({
 
   const SelectedComponent = components[render];
 
+
   return (
     <div>
       <Controller
         name={name}
         control={control}
-        // rules={{ validate: getValidationRules }}
         // rules={rules?rules :false}
         render={({ field }) => (
           <>
             <span>
-              {!errors[name] && label+'*'}
-              { errors && errors[name] && (
-                <span className="requiredHighlight">{`${errors[name].message}`}</span>
+              {(!errors[name] &&label) ? label + " *" : null}
+              {errors && errors[name] && (
+                <span className="requiredHighlight">{`${errors[name].message}`+ " *"}</span>
               )}
             </span>
-            <SelectedComponent className="ocs-fields" {...field} {...rest} />
+            <SelectedComponent
+              className="ocs-fields"
+              options={
+                render == "select" &&
+                options &&
+                options.length > 0 &&
+                options.map((item) => {
+                  return {
+                    label: item[nameKey || "label"],
+                    value: item[valueKey || "_id"],
+                  };
+                })
+              }
+              {...field}
+              {...rest}
+            />
           </>
         )}
       />
